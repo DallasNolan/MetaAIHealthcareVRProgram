@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MR HUD — Windows Reinstall Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #080b10;
+    --surface: #0e1219;
+    --surface2: #141820;
+    --border: #1e2530;
+    --text: #c8d4e8;
+    --muted: #4a5568;
+    --green: #00ff88;
+    --green-dim: #003322;
+    --blue: #38bdf8;
+    --blue-dim: #001828;
+    --purple: #a78bfa;
+    --purple-dim: #1a0a38;
+    --amber: #fbbf24;
+    --amber-dim: #1a1000;
+    --red: #f87171;
+    --red-dim: #1a0808;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 48px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    border: 1px solid rgba(56,189,248,0.25);
+    background: rgba(56,189,248,0.06);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  header h1 { font-size: 36px; font-weight: 700; color: #fff; letter-spacing: -0.5px; margin-bottom: 8px; }
+  header h1 span { color: var(--blue); }
+  header p { color: var(--muted); max-width: 600px; margin-bottom: 20px; }
+
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; border: 1px solid; }
+  .cb { color: var(--blue); background: var(--blue-dim); border-color: rgba(56,189,248,0.2); }
+  .cg { color: var(--green); background: var(--green-dim); border-color: rgba(0,255,136,0.2); }
+
+  main { padding: 48px; max-width: 1000px; }
+
+  .section { margin-bottom: 56px; }
+
+  .sh {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sn {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+
+  .snb { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(56,189,248,0.2); }
+  .sng { background: var(--green-dim); color: var(--green); border: 1px solid rgba(0,255,136,0.2); }
+  .sna { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+
+  .sh h2 { font-size: 18px; font-weight: 700; color: #fff; }
+  .sh p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+
+  .ch {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cn {
+    width: 22px; height: 22px; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 2px;
+  }
+
+  .cnb { background: var(--blue-dim); color: var(--blue); }
+  .cng { background: var(--green-dim); color: var(--green); }
+  .cna { background: var(--amber-dim); color: var(--amber); }
+
+  .ct { font-weight: 600; color: #e8f0fc; font-size: 13px; }
+  .cd { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .cb2 { padding: 16px; }
+
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    background: #040609;
+    border: 1px solid #121820;
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    line-height: 1.65;
+    color: #7a9ab8;
+    margin-bottom: 10px;
+    white-space: pre;
+  }
+
+  pre:last-child { margin-bottom: 0; }
+
+  .cm { color: #1e3040; }
+  .kw { color: var(--green); }
+  .st { color: #7ec8a0; }
+  .bl { color: var(--blue); opacity:0.9; }
+
+  .alert {
+    display: flex; gap: 10px;
+    padding: 12px 14px; border-radius: 8px;
+    font-size: 12px; margin-top: 10px; line-height: 1.6;
+  }
+
+  .aw { background: var(--amber-dim); border: 1px solid rgba(251,191,36,0.15); color: #e0aa20; }
+  .ai { background: var(--blue-dim); border: 1px solid rgba(56,189,248,0.15); color: #60b8e0; }
+  .ag { background: var(--green-dim); border: 1px solid rgba(0,255,136,0.15); color: #00cc70; }
+
+  .ai2 { font-size: 14px; flex-shrink: 0; }
+
+  code { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: #040609; padding: 2px 6px; border-radius: 4px; color: var(--blue); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { text-align: left; padding: 8px 12px; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 500; border-bottom: 1px solid var(--border); }
+  td { padding: 9px 12px; border-bottom: 1px solid #0a0e14; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { color: #dce8f8; font-weight: 500; }
+
+  footer { border-top: 1px solid var(--border); padding: 24px 48px; color: var(--muted); font-size: 11px; text-align: center; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Windows Reinstall Guide</div>
+  <h1>MR HUD — <span>Laptop Scripts</span></h1>
+  <p>Everything needed to reinstall and run the Windows laptop side of the MR HUD project. Unity project and website are archived separately.</p>
+  <div class="chips">
+    <span class="cb">Node.js 24+</span>
+    <span class="cb">Python 3.11+</span>
+    <span class="cg">Google Gemini API</span>
+    <span class="cg">YOLOv8-nano</span>
+    <span class="cg">Vernier Data Streamer</span>
+    <span class="cb">FFmpeg</span>
+  </div>
+</header>
+
+<main>
+
+<!-- STEP 1 — SOFTWARE INSTALLS -->
+<div class="section">
+  <div class="sh">
+    <div class="sn snb">1</div>
+    <div>
+      <h2>Download &amp; Install Required Software</h2>
+      <p>Do these before anything else</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cb2">
+      <table>
+        <tr><th>Software</th><th>Where to Download</th><th>Install Notes</th></tr>
+        <tr><td>Node.js 24 LTS</td><td>nodejs.org</td><td>Includes npm automatically</td></tr>
+        <tr><td>Python 3.11+</td><td>python.org</td><td>Check <strong>"Add Python to PATH"</strong> during install</td></tr>
+        <tr><td>FFmpeg</td><td>ffmpeg.org/download.html → Windows builds by BtbN</td><td>Extract to <code>C:\ffmpeg</code>, add <code>C:\ffmpeg\bin</code> to System PATH</td></tr>
+        <tr><td>ADB Platform Tools</td><td>developer.android.com/tools/releases/platform-tools</td><td>Extract to <code>C:\platform-tools</code>, add to System PATH</td></tr>
+        <tr><td>Vernier Graphical Analysis</td><td>vernier.com/downloads</td><td>Required to install the LabQuest Mini USB driver</td></tr>
+        <tr><td>Microsoft Data Streamer</td><td>Built into Excel</td><td>Excel → File → Options → Add-ins → COM Add-ins → check Data Streamer</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 2 — NODE PROJECT -->
+<div class="section">
+  <div class="sh">
+    <div class="sn snb">2</div>
+    <div>
+      <h2>Create Node.js Project</h2>
+      <p>The Gemini API proxy — keeps your API key off the Quest headset</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="cn cnb">A</div><div><div class="ct">Create folder and install packages</div><div class="cd">Run in PowerShell</div></div></div>
+    <div class="cb2">
+<pre><span class="bl">mkdir C:\mr-hud-server</span>
+<span class="bl">cd C:\mr-hud-server</span>
+<span class="bl">npm init -y</span>
+<span class="bl">npm install @google/generative-ai express cors dotenv</span></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="cn cnb">B</div><div><div class="ct">Create .env file</div><div class="cd">Get your API key from aistudio.google.com → Get API Key (free tier)</div></div></div>
+    <div class="cb2">
+<pre><span class="bl">notepad C:\mr-hud-server\.env</span></pre>
+      <p style="font-size:12px;margin:8px 0;">Type exactly one line:</p>
+<pre><span class="st">GEMINI_API_KEY=your-key-here</span></pre>
+      <div class="alert aw"><span class="ai2">!</span><span>Never share or commit this file. The key gives access to your Gemini quota.</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="cn cnb">C</div><div><div class="ct">Create server.js</div><div class="cd">notepad C:\mr-hud-server\server.js</div></div></div>
+    <div class="cb2">
+<pre><span class="st">require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genai.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
+
+app.post('/query', async (req, res) => {
+  try {
+    const result = await model.generateContent(req.body.message);
+    res.json({ reply: result.response.text() });
+  } catch (err) {
+    res.status(500).json({ reply: 'Error: ' + err.message });
+  }
+});
+
+app.listen(3000, () => console.log('Gemini proxy running on :3000'));</span></pre>
+      <div class="alert ag"><span class="ai2">✓</span><span>Test it: run <code>node server.js</code> then in another PowerShell: <code>Invoke-WebRequest -Uri http://localhost:3000/query -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"message":"say hello"}'</code></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="cn cnb">D</div><div><div class="ct">Create ask_gemini.ps1</div><div class="cd">PowerShell chat interface — use this instead of VR controller input</div></div></div>
+    <div class="cb2">
+<pre><span class="bl">notepad C:\mr-hud-server\ask_gemini.ps1</span></pre>
+<pre><span class="st">while ($true) {
+    $query = Read-Host "Ask Gemini"
+    if ($query -eq "exit") { break }
+    $body = '{"message":"' + $query + '"}'
+    $response = Invoke-WebRequest -Uri http://localhost:3000/query `
+        -Method POST `
+        -Headers @{"Content-Type"="application/json"} `
+        -Body $body
+    $json = $response.Content | ConvertFrom-Json
+    Write-Host "Gemini: $($json.reply)" -ForegroundColor Green
+    Write-Host ""
+}</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 3 — PYTHON -->
+<div class="section">
+  <div class="sh">
+    <div class="sn sng">3</div>
+    <div>
+      <h2>Create Python Virtual Environment</h2>
+      <p>Heart rate sender + person detector</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="cn cng">A</div><div><div class="ct">Create venv and install packages</div></div></div>
+    <div class="cb2">
+<pre><span class="bl">python -m venv C:\mr-hud-env</span>
+<span class="bl">Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</span>
+<span class="bl">C:\mr-hud-env\Scripts\Activate.ps1</span>
+<span class="bl">pip install ultralytics opencv-python numpy xlwings</span></pre>
+      <div class="alert ai"><span class="ai2">i</span><span>Every time you open a new PowerShell window you need to run <code>C:\mr-hud-env\Scripts\Activate.ps1</code> to activate the venv before running Python scripts.</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="cn cng">B</div><div><div class="ct">Create ekg_sender.py</div><div class="cd">Reads heart rate from Excel Data Streamer, sends to Quest via UDP</div></div></div>
+    <div class="cb2">
+<pre><span class="bl">notepad C:\mr-hud-server\ekg_sender.py</span></pre>
+<pre><span class="st">import socket, json, time, xlwings as xw
+
+QUEST_IP     = "192.168.137.123"   # Quest IP on laptop hotspot — update if changed
+QUEST_PORT   = 5001
+MONITOR_PORT = 5003
+BROADCAST    = "192.168.137.255"
+
+udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+udp.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+udp.bind(("192.168.137.1", 0))    # must have hotspot ON before running
+
+print("Connecting to Excel...")
+try:
+    wb = xw.books.active
+    ws = wb.sheets.active
+    print(f"Connected to: {wb.name}")
+except:
+    print("Could not connect to Excel — open Excel with Data Streamer running first")
+    exit()
+
+print("Streaming heart rate...")
+
+bpm_history = []
+heart_rate = 0
+
+while True:
+    try:
+        raw = ws.range('D5').value    # Vernier Hand-Grip outputs BPS in CH3 = column D row 5
+        if raw is not None:
+            bpm = float(raw) * 60    # convert beats per second → beats per minute
+            if 50 < bpm < 150:       # filter noise
+                bpm_history.append(bpm)
+                if len(bpm_history) > 10:
+                    bpm_history.pop(0)
+                heart_rate = int(sum(bpm_history) / len(bpm_history))
+
+            payload = json.dumps({
+                "ekg":  round(float(raw), 4),
+                "hr":   heart_rate,
+                "seq":  int(time.time())
+            }).encode()
+
+            udp.sendto(payload, (QUEST_IP, QUEST_PORT))
+            udp.sendto(payload, (BROADCAST, MONITOR_PORT))
+            print(f"HR: {heart_rate} bpm  |  Raw: {raw:.4f} BPS")
+        else:
+            print("No data in D5 — is Data Streamer collecting?")
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+    time.sleep(0.1)</span></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="cn cng">C</div><div><div class="ct">Create laptop_detector.py</div><div class="cd">YOLOv8 person detection via webcam — sends bounding boxes to Quest</div></div></div>
+    <div class="cb2">
+<pre><span class="bl">notepad C:\mr-hud-server\laptop_detector.py</span></pre>
+<pre><span class="st">import cv2, socket, json, time
+from ultralytics import YOLO
+
+QUEST_IP   = "192.168.137.123"
+QUEST_PORT = 5002
+
+model = YOLO("yolov8n.pt")   # downloads ~6MB model automatically on first run
+sock  = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+cap   = cv2.VideoCapture(1)  # change to 0 if camera index 1 does not work
+
+print("Person detector running — press Q in the window to quit")
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        print("No camera frame — retrying...")
+        time.sleep(1)
+        continue
+
+    results = model(frame, classes=[0], verbose=False, conf=0.7)
+    boxes = []
+
+    for r in results[0].boxes:
+        x1, y1, x2, y2 = r.xyxy[0].tolist()
+        boxes.append({"x": x1, "y": y1, "w": x2 - x1, "h": y2 - y1})
+
+    if boxes:
+        sock.sendto(json.dumps({"boxes": boxes}).encode(), (QUEST_IP, QUEST_PORT))
+        print(f"Detected {len(boxes)} person(s)")
+
+    cv2.imshow("Person Detection", frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()</span></pre>
+      <div class="alert aw"><span class="ai2">!</span><span>If the camera window shows the wrong camera, change <code>cv2.VideoCapture(1)</code> to <code>cv2.VideoCapture(0)</code>.</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 4 — FIREWALL -->
+<div class="section">
+  <div class="sh">
+    <div class="sn snb">4</div>
+    <div>
+      <h2>Open Firewall Ports</h2>
+      <p>Run PowerShell as Administrator — one time only</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cb2">
+<pre><span class="bl">New-NetFirewallRule -DisplayName "MR HUD 5001 In"  -Direction Inbound  -Protocol UDP -LocalPort 5001 -Action Allow</span>
+<span class="bl">New-NetFirewallRule -DisplayName "MR HUD 5001 Out" -Direction Outbound -Protocol UDP -LocalPort 5001 -Action Allow</span>
+<span class="bl">New-NetFirewallRule -DisplayName "MR HUD 5002"     -Direction Inbound  -Protocol UDP -LocalPort 5002 -Action Allow</span>
+<span class="bl">New-NetFirewallRule -DisplayName "MR HUD 3000"     -Direction Inbound  -Protocol TCP -LocalPort 3000 -Action Allow</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 5 — UNITY GRADLE FIX -->
+<div class="section">
+  <div class="sh">
+    <div class="sn sna">5</div>
+    <div>
+      <h2>Unity Build Fix (Gradle Manifest)</h2>
+      <p>Required before EVERY Unity Build And Run — known bug with Meta XR SDK 67 + Unity 6</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="cn cna">!</div><div><div class="ct">Run this in CMD as Administrator before every build</div><div class="cd">The transform hash IDs shown below are specific to this machine's Gradle cache</div></div></div>
+    <div class="cb2">
+<pre><span class="cm"># Step 1 — Remove read-only lock from all three files</span>
+<span class="kw">attrib -r -s "C:\Users\aeddn\.gradle\caches\9.1.0\transforms\1324409382a9c0180c905c3ff02191d1\workspace\transformed\InteractionSdk\AndroidManifest.xml"</span>
+<span class="kw">attrib -r -s "C:\Users\aeddn\.gradle\caches\9.1.0\transforms\99393b5cb80d88b27cfd330c854adb93\workspace\transformed\SDKTelemetry\AndroidManifest.xml"</span>
+<span class="kw">attrib -r -s "C:\Users\aeddn\.gradle\caches\9.1.0\transforms\307e09dd5d897e48b4f2f95ebd769bd1\workspace\transformed\OVRPlugin\AndroidManifest.xml"</span>
+
+<span class="cm"># Step 2 — Open each file and make these changes:</span>
+<span class="cm">#   InteractionSdk: change  package="com.oculus.Integration"  →  package="com.oculus.InteractionSdk"</span>
+<span class="cm">#   SDKTelemetry:   change  package="com.oculus.Integration"  →  package="com.oculus.SDKTelemetry"</span>
+<span class="cm">#   OVRPlugin:      change  package="com.oculus.Integration"  →  package="com.oculus.OVRPlugin"</span>
+
+<span class="kw">notepad "C:\Users\aeddn\.gradle\caches\9.1.0\transforms\1324409382a9c0180c905c3ff02191d1\workspace\transformed\InteractionSdk\AndroidManifest.xml"</span>
+<span class="kw">notepad "C:\Users\aeddn\.gradle\caches\9.1.0\transforms\99393b5cb80d88b27cfd330c854adb93\workspace\transformed\SDKTelemetry\AndroidManifest.xml"</span>
+<span class="kw">notepad "C:\Users\aeddn\.gradle\caches\9.1.0\transforms\307e09dd5d897e48b4f2f95ebd769bd1\workspace\transformed\OVRPlugin\AndroidManifest.xml"</span>
+
+<span class="cm"># Step 3 — Re-lock as read-only after saving</span>
+<span class="kw">attrib +r "C:\Users\aeddn\.gradle\caches\9.1.0\transforms\1324409382a9c0180c905c3ff02191d1\workspace\transformed\InteractionSdk\AndroidManifest.xml"</span>
+<span class="kw">attrib +r "C:\Users\aeddn\.gradle\caches\9.1.0\transforms\99393b5cb80d88b27cfd330c854adb93\workspace\transformed\SDKTelemetry\AndroidManifest.xml"</span>
+<span class="kw">attrib +r "C:\Users\aeddn\.gradle\caches\9.1.0\transforms\307e09dd5d897e48b4f2f95ebd769bd1\workspace\transformed\OVRPlugin\AndroidManifest.xml"</span></pre>
+      <div class="alert aw"><span class="ai2">!</span><span>If the hash IDs no longer exist (e.g. after clearing Gradle cache), do one failed Build And Run first — Gradle will regenerate the transforms with the same IDs, then apply the fix above.</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 6 — DAILY STARTUP -->
+<div class="section">
+  <div class="sh">
+    <div class="sn sng">6</div>
+    <div>
+      <h2>Daily Startup Order</h2>
+      <p>Every session — run these in order</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cb2">
+      <table>
+        <tr><th>#</th><th>Action</th><th>Wait for</th></tr>
+        <tr><td>1</td><td>Settings → Network → Mobile Hotspot → <strong>On</strong></td><td>Hotspot shows as active</td></tr>
+        <tr><td>2</td><td>Connect Quest to laptop hotspot in Quest WiFi settings</td><td>Quest shows connected (IP: 192.168.137.123)</td></tr>
+        <tr><td>3</td><td>Plug in LabQuest Mini + Hand-Grip Heart Rate sensor via USB</td><td>Device appears in Device Manager</td></tr>
+        <tr><td>4</td><td>Open Excel → Data Streamer → <strong>Start Data</strong></td><td>Numbers appear in cell D5</td></tr>
+        <tr><td>5</td><td>PowerShell 1: <code>cd C:\mr-hud-server && node server.js</code></td><td>"Gemini proxy running on :3000"</td></tr>
+        <tr><td>6</td><td>PowerShell 2: activate venv → <code>python C:\mr-hud-server\ekg_sender.py</code></td><td>"Connected to: [workbook name]" then HR values printing</td></tr>
+        <tr><td>7</td><td>PowerShell 3: activate venv → <code>python C:\mr-hud-server\laptop_detector.py</code></td><td>Camera window opens</td></tr>
+        <tr><td>8</td><td>Launch <strong>MR-HUD</strong> on Quest: App Library → Unknown Sources</td><td>Passthrough + HUD visible, status shows LIVE</td></tr>
+        <tr><td>9</td><td>PowerShell 4: <code>C:\mr-hud-server\ask_gemini.ps1</code> (optional)</td><td>Prompt appears — type questions</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 7 — NETWORK -->
+<div class="section">
+  <div class="sh">
+    <div class="sn snb">7</div>
+    <div>
+      <h2>Network Reference</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cb2">
+      <table>
+        <tr><th>Port</th><th>Protocol</th><th>Direction</th><th>Purpose</th></tr>
+        <tr><td><code>5001</code></td><td>UDP</td><td>Laptop → Quest</td><td>Heart rate + EKG data (ekg_sender → BiometricReceiver)</td></tr>
+        <tr><td><code>5002</code></td><td>UDP</td><td>Laptop → Quest</td><td>Person bounding boxes (laptop_detector → PersonDetector)</td></tr>
+        <tr><td><code>5003</code></td><td>UDP broadcast</td><td>Laptop → network</td><td>Biometric data broadcast for any monitor dashboard</td></tr>
+        <tr><td><code>3000</code></td><td>HTTP</td><td>Quest / PowerShell → Laptop</td><td>Gemini LLM proxy (POST /query)</td></tr>
+      </table>
+      <div class="alert ai" style="margin-top:12px;"><span class="ai2">i</span><span>All devices must be on the same network. Use the laptop's Mobile Hotspot — Quest IP is always 192.168.137.123, laptop gateway is 192.168.137.1.</span></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  MR HUD — Windows Laptop Scripts · Node.js 24 · Python 3.11 · Google Gemini API · YOLOv8 · Vernier Hand-Grip Heart Rate
+</footer>
+
+</body>
+</html>
